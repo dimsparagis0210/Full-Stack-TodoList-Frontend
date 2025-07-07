@@ -3,29 +3,30 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Eye, EyeOff, Mail, Lock, User, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { useRegister } from '@/hooks/auth/use-register';
+import type { SignInDTO, SignUpDTO } from '@/types/types';
+import { useAuthenticate } from '@/hooks/auth/use-authenticate';
 
 const signInSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
-  rememberMe: z.boolean().optional(),
 });
 
 const signUpSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number'),
+    .min(3, 'Password must be at least 3 characters'),
+    // .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    // .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    // .regex(/[0-9]/, 'Password must contain at least one number'),
   confirmPassword: z.string(),
-  agreeToTerms: z.boolean().refine(val => val === true, 'You must agree to the terms and conditions'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -34,19 +35,19 @@ const signUpSchema = z.object({
 type SignInData = z.infer<typeof signInSchema>;
 type SignUpData = z.infer<typeof signUpSchema>;
 
-export default function AuthForm(props: { isSignUp: boolean }) {
+export const AuthForm = (props: { isSignUp: boolean }) => {
   const [isSignUp, setIsSignUp] = useState(props.isSignUp);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
       password: '',
-      rememberMe: false,
-    },
+      },
   });
 
   const signUpForm = useForm<SignUpData>({
@@ -56,18 +57,33 @@ export default function AuthForm(props: { isSignUp: boolean }) {
       email: '',
       password: '',
       confirmPassword: '',
-      agreeToTerms: false,
     },
   });
 
   const currentForm = isSignUp ? signUpForm : signInForm;
 
+  const register = useRegister();
+  const authenticate = useAuthenticate();
+
   const onSubmit = async (data: SignInData | SignUpData) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Form submitted:', data);
+      console.log('Form submitt2ed:', data);
+      if (isSignUp && 'name' in data) {
+        const dto: SignUpDTO = {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        };
+        console.log('DTO:', dto);
+        register.mutate(dto);
+      } else {
+        const dto: SignInDTO = {
+          username: data.email,
+          password: data.password,
+        };
+        authenticate.mutate(dto);
+      }
       // Handle success
     } catch (error) {
       console.error('Error:', error);
@@ -83,20 +99,6 @@ export default function AuthForm(props: { isSignUp: boolean }) {
     signUpForm.reset();
   };
 
-  const getPasswordStrength = (password: string) => {
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[a-z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[^A-Za-z0-9]/.test(password)) strength++;
-    return strength;
-  };
-
-  const passwordStrength = isSignUp ? getPasswordStrength(signUpForm.watch('password') || '') : 0;
-
-  const strengthLabels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
-  const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-blue-500', 'bg-green-500'];
 
   return (
     <Card className="w-full max-w-md mx-auto backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border-white/20 shadow-2xl">
@@ -175,25 +177,7 @@ export default function AuthForm(props: { isSignUp: boolean }) {
             {currentForm.formState.errors.password && (
               <p className="text-sm text-red-600">{currentForm.formState.errors.password.message}</p>
             )}
-            
-            {isSignUp && passwordStrength > 0 && (
-              <div className="space-y-2">
-                <div className="flex space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <div
-                      key={i}
-                      className={cn(
-                        "h-1 w-full rounded-full transition-colors",
-                        i < passwordStrength ? strengthColors[passwordStrength - 1] : "bg-gray-200"
-                      )}
-                    />
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Password strength: {strengthLabels[passwordStrength - 1]}
-                </p>
-              </div>
-            )}
+           
           </div>
 
           {isSignUp && (
