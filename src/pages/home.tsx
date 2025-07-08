@@ -6,6 +6,8 @@ import { decodeJwt } from "@/lib/jwt";
 import { useUser } from "@/hooks/home/use-user";
 import { useEffect, useState } from "react";
 import type { User } from "@/types/types";
+import { Header } from "@/components/home/header";
+import { Main } from "@/components/home/main";
 
 export const Home = () => {
   const { isAuthenticated, accessToken } = useAuth();
@@ -73,22 +75,9 @@ export const Home = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Home</h1>
-        <Button 
-          onClick={handleLogout}
-          variant="outline"
-          className="bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
-        >
-          Logout
-        </Button>
-      </div>
-      <div className="space-y-2 text-sm text-gray-600">
-        <p>Authentication Status: ✅ Authenticated</p>
-        <p>Access Token: ✅ Present</p>
-        <p>User: {user.name}</p>
-      </div>
+    <div className="h-screen flex flex-col gap-y-10 px-5 pt-5 overflow-hidden z-10 relative">
+      <Header />
+      <Main />
     </div>
   );
 };

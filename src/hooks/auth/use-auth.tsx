@@ -3,9 +3,7 @@ export const useAuth = () => {
     const refreshToken = localStorage.getItem('refreshToken');
 
     const isAuthenticated = !!accessToken && !!refreshToken || isTokenValid(accessToken!) || isTokenValid(refreshToken!); 
-    console.log("isAuthenticated", isAuthenticated);
 
-    console.log(isAuthenticated);
     return {
         isAuthenticated,
         accessToken,

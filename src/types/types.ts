@@ -22,3 +22,16 @@ export type User = {
     password: string;
 }
 
+export type Task = {
+    id: number;
+    title: string;
+    description: string;
+    priority: string;
+    status: string;
+    startDate: string;
+    dueDate: string;
+    category: string;
+    createdBy: string;
+    assignedTo: string;
+    createdAt: string;
+}
