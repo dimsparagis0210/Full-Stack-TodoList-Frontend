@@ -68,7 +68,6 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
   const onSubmit = async (data: SignInData | SignUpData) => {
     setIsLoading(true);
     try {
-      console.log('Form submitt2ed:', data);
       if (isSignUp && 'name' in data) {
         const dto: SignUpDTO = {
           name: data.name,
