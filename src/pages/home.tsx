@@ -1,17 +1,21 @@
 import { useAuth } from "@/hooks/auth/use-auth"
 import { Navigate } from "react-router-dom";
 import { logout, tryRefreshToken } from "@/api/auth";
-import { Button } from "@/components/ui/button";
 import { decodeJwt } from "@/lib/jwt";
 import { useUser } from "@/hooks/home/use-user";
 import { useEffect, useState } from "react";
 import type { User } from "@/types/types";
 import { Header } from "@/components/home/header";
 import { Main } from "@/components/home/main";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "@/store/user-slice";
+import type { RootState } from "@/store/store";
 
 export const Home = () => {
   const { isAuthenticated, accessToken } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(true);
+  const dispatch = useDispatch();
+  const userContext = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const refreshToken = async () => {
@@ -55,6 +59,13 @@ export const Home = () => {
      enabled: !isRefreshing && !!accessToken && !!sub,
    }) as { data: User | undefined, isLoading: boolean, error: any };
 
+  // Update userSlice when user data is fetched - this ensures proper Redux updates
+  useEffect(() => {
+    if (user && user.id) {
+      dispatch(setUser(user));
+    }
+  }, [user, dispatch]);
+
   // While refreshing token
   if (isRefreshing) {
     return <div>Refreshing token...</div>;
@@ -63,12 +74,10 @@ export const Home = () => {
   if (isLoading) {
     return <div>Loading user...</div>;
   }
-
+  
   if (error || !user || !isAuthenticated) {
     return <Navigate to="/sign-in" />
   }
-
-  console.log("User", user);
 
   const handleLogout = () => {
     logout();
