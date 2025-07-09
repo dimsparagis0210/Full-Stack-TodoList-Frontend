@@ -1,6 +1,7 @@
 // Mock data for the tasks
+import type { Task } from "@/types/types";
 
-export const tasks = [
+export const tasks: Task[] = [
     {
         id: 1,
         title: "Task 1",
@@ -9,10 +10,11 @@ export const tasks = [
         createdAt: "2021-01-01",
         dueDate: "2021-01-01",
         priority: "Low",
-        assignedTo: "John Doe",
+        assignedTo: 1,
         category: "Work",
-        createdBy: "John Doe",
+        createdBy: 1,
         startDate: "2021-01-01",
+        boardId: 1,
     },
     {
         id: 2,
@@ -22,10 +24,11 @@ export const tasks = [
         createdAt: "2021-01-01",
         dueDate: "2021-01-01",
         priority: "Medium",
-        assignedTo: "Jane Doe",
+        assignedTo: 2,
         category: "Personal",
-        createdBy: "John Doe",
+        createdBy: 1,
         startDate: "2021-01-01",
+        boardId: 1,
     },
     {
         id: 3,
@@ -35,10 +38,11 @@ export const tasks = [
         createdAt: "2021-01-01",
         dueDate: "2021-01-01",
         priority: "High",
-        assignedTo: "John Doe",
+        assignedTo: 1,
         category: "Work",
-        createdBy: "John Doe",
+        createdBy: 1,
         startDate: "2021-01-01",
+        boardId: 1,
     },
     {
         id: 4,
@@ -48,10 +52,11 @@ export const tasks = [
         createdAt: "2021-01-01",
         dueDate: "2021-01-01",
         priority: "Low",
-        assignedTo: "John Doe",
+        assignedTo: 1,
         category: "Work",
-        createdBy: "John Doe",
+        createdBy: 1,
         startDate: "2021-01-01",
+        boardId: 1,
     },
     {
         id: 5,
@@ -61,10 +66,11 @@ export const tasks = [
         createdAt: "2021-01-01",
         dueDate: "2021-01-01",
         priority: "Low",
-        assignedTo: "John Doe",
+        assignedTo: 1,
         category: "Personal",
-        createdBy: "John Doe",
+        createdBy: 1,
         startDate: "2021-01-01",
+        boardId: 1,
     },
     // Add 10 more tasks of random status
     ...Array.from({ length: 10 }, (_, index) => ({
@@ -75,9 +81,10 @@ export const tasks = [
         createdAt: "2021-01-01",
         dueDate: "2021-01-01",
         priority: ["Low", "Medium", "High"][Math.floor(Math.random() * 3)],
-        assignedTo: "John Doe",
+        assignedTo: 1,
         category: "Work",
-        createdBy: "John Doe",
+        createdBy: 1,
         startDate: "2021-01-01",
+        boardId: 1,
     })),
 ];
