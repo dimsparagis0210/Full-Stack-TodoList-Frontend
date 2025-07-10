@@ -52,6 +52,7 @@ export const EditTaskModal = ({
     open,
     onOpenChange,
 }: EditTaskModalProps) => {
+    console.log("Task:", assignedToName);
     const [form, setForm] = useState({
         title: task.title,
         description: task.description,
@@ -71,6 +72,7 @@ export const EditTaskModal = ({
     const [dueDateOpen, setDueDateOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+    const [dateError, setDateError] = useState("");
     const closeButtonRef = useRef<HTMLButtonElement>(null);
     const editTaskMutation = useEditTask(task.id);
 
@@ -110,6 +112,7 @@ export const EditTaskModal = ({
     };
 
     const handleAssigneeSelect = (id: number, name: string) => {
+        console.log("Assignee selected:", id, name);
         setForm({ ...form, assignedTo: name });
         setAssigneeOpen(false);
         // Clear search when selection is made
@@ -120,29 +123,52 @@ export const EditTaskModal = ({
     const handleStartDateSelect = (date: Date | undefined) => {
         setForm({ ...form, startDate: date });
         setStartDateOpen(false);
+        // Clear date error when user changes dates
+        if (dateError) setDateError("");
     };
 
     const handleDueDateSelect = (date: Date | undefined) => {
         setForm({ ...form, dueDate: date });
         setDueDateOpen(false);
+        // Clear date error when user changes dates
+        if (dateError) setDateError("");
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Clear any previous errors
+        setDateError("");
+        
+        // Validate dates
+        if (form.startDate && form.dueDate && form.startDate > form.dueDate) {
+            setDateError("Start date cannot be after due date");
+            return;
+        }
+
         // Convert dates to ISO string format for API
         const taskData = {
             ...form,
-            status: task.status,
+            title: form.title,
+            description: form.description,
+            category: form.category,
+            priority: form.priority,
+            assignedTo: form.assignedTo,
             startDate: form.startDate ? format(form.startDate, "yyyy-MM-dd") : "",
             dueDate: form.dueDate ? format(form.dueDate, "yyyy-MM-dd") : "",
+            status: task.status, // Keep original status
         };
+
+        console.log("Submitting task data:", taskData);
+        console.log("Task ID:", task.id);
 
         editTaskMutation.mutate(
             { task: taskData, taskId: task.id },
             {
                 onSuccess: () => {
                     console.log("Task updated successfully");
+                    // Clear any errors
+                    setDateError("");
                     onOpenChange(false);
                 },
                 onError: (error) => {
@@ -311,7 +337,8 @@ export const EditTaskModal = ({
                                         variant="outline"
                                         className={cn(
                                             "w-full justify-between text-left font-normal",
-                                            !form.startDate && "text-muted-foreground"
+                                            !form.startDate && "text-muted-foreground",
+                                            dateError && "border-red-500 focus:ring-red-500"
                                         )}
                                     >
                                         {form.startDate ? (
@@ -340,7 +367,8 @@ export const EditTaskModal = ({
                                         variant="outline"
                                         className={cn(
                                             "w-full justify-between text-left font-normal",
-                                            !form.dueDate && "text-muted-foreground"
+                                            !form.dueDate && "text-muted-foreground",
+                                            dateError && "border-red-500 focus:ring-red-500"
                                         )}
                                     >
                                         {form.dueDate ? (
@@ -362,6 +390,12 @@ export const EditTaskModal = ({
                             </Popover>
                         </div>
                     </div>
+                    {dateError && (
+                        <div className="text-red-500 text-sm mt-1 flex items-center gap-2">
+                            
+                            {dateError}
+                        </div>
+                    )}
                     <DialogFooter>
                         <Button type="submit" className="my-button">
                             Update

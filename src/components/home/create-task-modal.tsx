@@ -60,6 +60,7 @@ export const CreateTaskModal = ({ trigger, status }: CreateTaskModalProps) => {
   const [dueDateOpen, setDueDateOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [dateError, setDateError] = useState("");
   const addTaskMutation = useAddTask();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -90,15 +91,27 @@ export const CreateTaskModal = ({ trigger, status }: CreateTaskModalProps) => {
   const handleStartDateSelect = (date: Date | undefined) => {
     setForm({ ...form, startDate: date });
     setStartDateOpen(false);
+    // Clear date error when user changes dates
+    if (dateError) setDateError("");
   };
 
   const handleDueDateSelect = (date: Date | undefined) => {
     setForm({ ...form, dueDate: date });
     setDueDateOpen(false);
+    // Clear date error when user changes dates
+    if (dateError) setDateError("");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Clear any previous errors
+    setDateError("");
+    // Validate dates
+    if (form.startDate && form.dueDate && form.startDate > form.dueDate) {
+      setDateError("Start date cannot be after due date");
+      return;
+    }
     
     // Convert dates to ISO string format for API
     const taskData = {
@@ -125,6 +138,8 @@ export const CreateTaskModal = ({ trigger, status }: CreateTaskModalProps) => {
             startDate: undefined,
             dueDate: undefined,
           });
+          // Clear any errors
+          setDateError("");
           // Close modal using the close button ref
           closeButtonRef.current?.click();
         },
@@ -249,7 +264,8 @@ export const CreateTaskModal = ({ trigger, status }: CreateTaskModalProps) => {
                     variant="outline"
                     className={cn(
                       "w-full justify-between text-left font-normal",
-                      !form.startDate && "text-muted-foreground"
+                      !form.startDate && "text-muted-foreground",
+                      dateError && "border-red-500 focus:ring-red-500"
                     )}
                   >
                     {form.startDate ? format(form.startDate, "PPP") : <span>Pick a start date</span>}
@@ -274,7 +290,8 @@ export const CreateTaskModal = ({ trigger, status }: CreateTaskModalProps) => {
                     variant="outline"
                     className={cn(
                       "w-full justify-between text-left font-normal",
-                      !form.dueDate && "text-muted-foreground"
+                      !form.dueDate && "text-muted-foreground",
+                      dateError && "border-red-500 focus:ring-red-500"
                     )}
                   >
                     {form.dueDate ? format(form.dueDate, "PPP") : <span>Pick a due date</span>}
@@ -292,6 +309,11 @@ export const CreateTaskModal = ({ trigger, status }: CreateTaskModalProps) => {
               </Popover>
             </div>
           </div>
+          {dateError && (
+            <div className="text-red-500 text-sm mt-1 flex items-center gap-2">
+              {dateError}
+            </div>
+          )}
           <DialogFooter>
             <Button type="submit" className="my-button">Create</Button>
             <DialogClose asChild>
