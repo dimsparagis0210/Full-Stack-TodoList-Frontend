@@ -175,6 +175,9 @@
 .bg-blur-circle {
   position: fixed;
   bottom: -30%;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
   left: 50%;
   right: 50%;
   transform: translateX(-50%);
@@ -182,8 +185,19 @@
   aspect-ratio: 1/1;
   background: #27C5C5;
   border-radius: 50%;
-  filter: blur(50px);
-  /* opacity:; */
+  filter: blur(30px);
+  opacity: 0.3;
   z-index: -999;
   pointer-events: none;
+}
+
+.bg-blur-circle-2 {
+  content: '';
+  position: relative;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, #9333EA 0%, #9333EA 70%, #27C5C5 100%);
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
 }
