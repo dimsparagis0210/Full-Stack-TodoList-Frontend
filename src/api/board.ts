@@ -37,3 +37,10 @@ export const deleteTask = async (taskId: number): Promise<Task> => {
         method: "DELETE",
     });
 }
+
+export const deleteTasks = async (taskIds: number[]): Promise<Task> => {
+    return await apiFetch(`${API_URL}/task/deleteTasks`, {
+        method: "DELETE",
+        body: JSON.stringify(taskIds),
+    });
+}

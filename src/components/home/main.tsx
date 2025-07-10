@@ -27,7 +27,9 @@ export const Main = () => {
                     }/>
                 ))}
             </section>
-            <div className="bg-blur-circle"></div>
+            <div className="bg-blur-circle">
+                <div className="bg-blur-circle-2"></div>
+            </div>
         </main>
     );
 }
