@@ -1,5 +1,10 @@
+/**
+ * Authenticate hook
+ * 
+ * This hook is used to authenticate/sign in the user.
+ */
 import { useMutation } from "@tanstack/react-query";
-import { signIn } from "@/api/sign-in";
+import { signIn } from "@/api/auth";
 import { useNavigate } from "react-router-dom";
 
 export const useAuthenticate = () => {

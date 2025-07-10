@@ -1,3 +1,8 @@
+/**
+ * JWT
+ * 
+ * This file contains the functions to decode a JWT.
+ */
 export const decodeJwt = (token: string): any | null => {
     try {
       const [, payload] = token.split(".");

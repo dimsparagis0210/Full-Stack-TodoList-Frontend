@@ -1,7 +1,14 @@
+/**
+ * Main component
+ * 
+ * This component is the main component of the home page.
+ * It renders the main content of the home page.
+ */
 import { TaskList } from "./task-list";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 
+// Statuses of the tasks
 const statuses = [
     "To Do",
     "In Progress",
@@ -9,8 +16,12 @@ const statuses = [
 ]
 
 export const Main = () => {
+    // Get the user from the Redux store
     const user = useSelector((state: RootState) => state.user);
 
+    console.log(user);
+
+    // Get and separate the tasks from the user's board
     const todoTasks = user.board?.tasks.filter((task) => task.status === "To Do");
     const inProgressTasks = user.board?.tasks.filter((task) => task.status === "In Progress");
     const doneTasks = user.board?.tasks.filter((task) => task.status === "Done");

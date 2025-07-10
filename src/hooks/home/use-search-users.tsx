@@ -1,3 +1,8 @@
+/**
+ * Search users hook
+ * 
+ * This hook is used to search for users by name.
+ */
 import { useQuery } from "@tanstack/react-query"
 import { fetchUsersByName } from "@/api/user"
 

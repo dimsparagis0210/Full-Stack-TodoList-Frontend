@@ -1,5 +1,11 @@
+/**
+ * Index.css
+ * 
+ * This file contains the styles for the application.
+ */
 @import "tailwindcss";
 
+/* Theme */
 @theme {
     --color-primaryGray: #A5A5A5;
     --color-secondaryGray: #B6B6B6;

@@ -1,3 +1,8 @@
+/**
+ * Delete tasks hook
+ * 
+ * This hook is used to delete tasks from the board.
+ */
 import { deleteTasks } from "@/api/board"
 import { queryClient } from "@/lib/queryClient";
 import { useMutation } from "@tanstack/react-query"

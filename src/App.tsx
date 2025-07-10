@@ -4,6 +4,12 @@ import { SignIn } from './pages/sign-in'
 import { SignUp } from './pages/sign-up'
 import './App.css'
 
+/**
+ * App component
+ * 
+ * This component is the root component of the application.
+ * It renders the application in the root element and provides the routes.
+ */
 function App() {
   return (
     <>  

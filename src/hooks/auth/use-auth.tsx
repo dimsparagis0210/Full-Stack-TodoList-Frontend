@@ -1,4 +1,10 @@
+/**
+ * Auth hook
+ * 
+ * This hook is used to check if the user is authenticated.
+ */
 export const useAuth = () => {
+    // States
     const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
 
@@ -11,6 +17,7 @@ export const useAuth = () => {
     }
 }
 
+// Helper function to check if the token is valid
 export const isTokenValid = (token: string) => {
     try {
       const [, payload] = token.split(".");

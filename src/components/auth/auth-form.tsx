@@ -1,3 +1,10 @@
+/**
+ * Auth Form
+ * 
+ * This component is used to render the auth form.
+ * It includes a sign in form and a sign up form.
+ * It also includes a toggle button to switch between the two forms.
+ */
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,40 +15,22 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 import { useRegister } from '@/hooks/auth/use-register';
 import type { SignInDTO, SignUpDTO } from '@/types/types';
 import { useAuthenticate } from '@/hooks/auth/use-authenticate';
-
-const signInSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
-
-const signUpSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string()
-    .min(3, 'Password must be at least 3 characters'),
-    // .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    // .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    // .regex(/[0-9]/, 'Password must contain at least one number'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+import { signInSchema, signUpSchema } from './auth-schemas';
 
 type SignInData = z.infer<typeof signInSchema>;
 type SignUpData = z.infer<typeof signUpSchema>;
 
 export const AuthForm = (props: { isSignUp: boolean }) => {
-  const [isSignUp, setIsSignUp] = useState(props.isSignUp);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  // States
+  const [isSignUp, setIsSignUp] = useState(props.isSignUp); // State to toggle between sign in and sign up
+  const [showPassword, setShowPassword] = useState(false); // State to show/hide password
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to show/hide confirm password
+  const [isLoading, setIsLoading] = useState(false); // State to show/hide loading spinner
 
+  // Forms
   const signInForm = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -60,46 +49,50 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
     },
   });
 
+  // Current form
   const currentForm = isSignUp ? signUpForm : signInForm;
 
+  // Hooks to handle the sign up and sign in
   const register = useRegister();
   const authenticate = useAuthenticate();
-
+  
+  // On submit
   const onSubmit = async (data: SignInData | SignUpData) => {
     setIsLoading(true);
     try {
-      if (isSignUp && 'name' in data) {
+      // If the form is sign up, we need to create a new user
+      if (isSignUp && 'name' in data) { // Check if the form is sign up and if the data has a name
         const dto: SignUpDTO = {
           name: data.name,
           email: data.email,
           password: data.password,
         };
-        console.log('DTO:', dto);
         register.mutate(dto);
+
       } else {
+        // If the form is sign in, we need to authenticate the user
         const dto: SignInDTO = {
           username: data.email,
           password: data.password,
         };
         authenticate.mutate(dto);
       }
-      // Handle success
     } catch (error) {
       console.error('Error:', error);
-      // Handle error
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Toggle between sign in and sign up
   const toggleMode = () => {
     setIsSignUp(!isSignUp);
     signInForm.reset();
     signUpForm.reset();
   };
 
-
   return (
+    // Card to wrap the form
     <Card className="w-full max-w-md mx-auto backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border-white/20 shadow-2xl">
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-2xl font-bold tracking-tight">
@@ -113,8 +106,9 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Form */}
+        {/* Form to handle the sign up and sign in */}
         <form onSubmit={currentForm.handleSubmit(onSubmit)} className="space-y-4">
+          {/* If the form is sign up, we need to show the name input */}
           {isSignUp && (
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
@@ -134,6 +128,7 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
             </div>
           )}
 
+          {/* Email input */}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <div className="relative">
@@ -152,6 +147,7 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
             )}
           </div>
 
+          {/* Password input */}
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <div className="relative">
@@ -179,6 +175,7 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
            
           </div>
 
+          {/* If the form is sign up, we need to show the confirm password input */}
           {isSignUp && (
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -207,8 +204,7 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
             </div>
           )}
 
-          
-
+          {/* Submit button */}
           <Button 
             type="submit" 
             className="w-full h-11 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
@@ -225,6 +221,7 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
           </Button>
         </form>
 
+        {/* Toggle button to switch between sign in and sign up */}
         <div className="text-center">
           <span className="text-sm text-muted-foreground">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}

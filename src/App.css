@@ -1,3 +1,8 @@
+/**
+ * App.css
+ * 
+ * This file contains the styles for the application.
+ */
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -119,6 +124,7 @@
   }
 }
 
+/* Primary blue colors */
 .bg-primary-blue { 
   @apply bg-[#27C5C5];
   /* 39AEC5 */
@@ -132,28 +138,34 @@
   @apply border-[#27C5C5];
 }
 
+/* My button */
 .my-button {
   @apply hover:scale-105 transition-all duration-300 hover:cursor-pointer;
 }
 
+/* My intense shadow */
 .my-intense-shadow {
   @apply shadow-[0_3px_10px_rgb(0,0,0,0.2)];
 }
 
+/* My shadow */
 .my-shadow {
   @apply shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)];
 }
 
+/* Task container */
 .task-container {
   @apply w-full h-full flex flex-col gap-y-2;
 }
 
+/* Task container media queries */
 @media (min-width: 768px) { /* sm */
   .task-container {
     @apply grid grid-cols-3 gap-x-10 gap-y-5;
   }
 }
 
+/* Blur circle media queries */
 @media (max-width: 768px) { /* md */
   .bg-blur-circle {
     display: none;
@@ -164,14 +176,17 @@
   }
 }
 
+/* Task list */
 .task-list {
   @apply h-full flex flex-col gap-y-2 overflow-scroll mb-2;
 }
 
+/* Dialog close */
 [data-slot="dialog-close"] {
   @apply hover:scale-105 transition-all duration-300 hover:cursor-pointer;
 }
 
+/* Blur circle */
 .bg-blur-circle {
   position: fixed;
   bottom: -30%;
@@ -191,6 +206,7 @@
   pointer-events: none;
 }
 
+/* Blur circle 2 */
 .bg-blur-circle-2 {
   content: '';
   position: relative;
