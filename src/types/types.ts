@@ -1,3 +1,9 @@
+/**
+ * Types
+ * 
+ * This file contains the types for the application.
+ */
+
 export type SignInDTO = {
     username: string;
     password: string;

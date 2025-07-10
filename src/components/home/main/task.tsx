@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+/**
+ * Task component
+ * 
+ * This component is the task component of the home page.
+ * It renders a task of the home page.
+ */
+import { useState } from "react";
 import type { Task as TaskType } from "@/types/types";
 import { getDateRange, getInitials } from "@/lib/utils";
 import { useUserById } from "@/hooks/home/use-user-by-id";
@@ -11,27 +17,33 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EditTaskModal } from "./edit-task-modal";
+import { TaskModal } from "../task-modal/task-modal";
 import { Edit, Move, Trash } from "lucide-react";
 import { useDeleteTask } from "@/hooks/home/use-delete.task";
 import { useEditTask } from "@/hooks/home/use-edit-task";
 
-export const Task = ({ task }: { task: TaskType }) => {
-    const user = useUserById(task.assignedTo);
-    const assigneeName = getInitials(user.data?.name || "");
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const priorityColor = task.priority === "Low" ? "bg-myGreen/10 text-myGreen" : task.priority === "Medium" ? "bg-myYellow/10 text-myYellow" : "bg-myRed/10 text-myRed";
+type TaskProps = {
+    task: TaskType;
+}
 
+export const Task = ({ task }: TaskProps) => {
+    // Hooks and states
+    const user = useUserById(task.assignedTo); // Get the user by id
+    const [dropdownOpen, setDropdownOpen] = useState(false); // State to control dropdown visibility
+    const assigneeName = getInitials(user.data?.name || ""); // Extract the assignee name initials
+    const priorityColor = task.priority === "Low" ? "bg-myGreen/10 text-myGreen" : task.priority === "Medium" ? "bg-myYellow/10 text-myYellow" : "bg-myRed/10 text-myRed"; // Set the priority color
+
+    // Mutations
     const deleteTaskMutation = useDeleteTask(task.id);
     const handleDeleteClick = () => {
-        deleteTaskMutation.mutate(task.id);
+        console.log("Deleting task");
+        deleteTaskMutation.mutate(task.id, {
+            onSuccess: () => {
+                setDropdownOpen(false); // Close dropdown after successful delete
+            }
+        });
     }
 
-    const handleEditClick = () => {
-        setEditModalOpen(true);
-        
-    };
-    
     const editTaskMutation = useEditTask(task.id);
     const handleMoveTask = (newStatus: string) => {
         const newTask = {
@@ -44,13 +56,23 @@ export const Task = ({ task }: { task: TaskType }) => {
             assignedTo: user.data?.name,
             status: newStatus,
         }
-        editTaskMutation.mutate({task: newTask, taskId: task.id});
+        editTaskMutation.mutate({task: newTask, taskId: task.id}, {
+            onSuccess: () => {
+                setDropdownOpen(false); // Close dropdown after successful move
+            }
+        });
     }
+
+    // Handle successful edit
+    const handleEditSuccess = () => {
+        setDropdownOpen(false); // Close dropdown after successful edit
+    };
 
     return (
         <>
-            <DropdownMenu>
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
+                    {/* Task card */}
                     <section className="hover:bg-[#f5f5f5] hover:cursor-pointer transition-all duration-300 flex flex-col gap-y-10 border border-[#E3E3E3] rounded-lg p-5 my-shadow bg-white">
                         <header className="flex flex-col gap-y-2">
                             <section className="flex justify-between">
@@ -75,15 +97,29 @@ export const Task = ({ task }: { task: TaskType }) => {
                         </section>
                     </section>
                 </DropdownMenuTrigger>
+                {/* Dropdown menu content */}
                 <DropdownMenuContent className="w-56">
-                    <DropdownMenuItem onClick={handleEditClick}>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit
-                    </DropdownMenuItem>
+                    {/* Edit Task Modal with dropdown item as trigger */}
+                    <TaskModal
+                        task={task}
+                        assignedToName={user.data?.name || ""}
+                        onSuccess={handleEditSuccess}
+                        trigger={
+                            <DropdownMenuItem 
+                                className="cursor-pointer"
+                                onSelect={(e) => e.preventDefault()}
+                            >
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit
+                            </DropdownMenuItem>
+                        }
+                    />
+                    {/* Delete task */}
                     <DropdownMenuItem onClick={handleDeleteClick}>
                         <Trash className="mr-2 h-4 w-4" />
                         Delete
                     </DropdownMenuItem>
+                    {/* Move task */}
                     <DropdownMenuSub>
                         <DropdownMenuSubTrigger>
                             <Move className="mr-2 h-4 w-4" />
@@ -103,13 +139,6 @@ export const Task = ({ task }: { task: TaskType }) => {
                     </DropdownMenuSub>
                 </DropdownMenuContent>
             </DropdownMenu>
-            
-            <EditTaskModal
-                task={task}
-                assignedToName={user.data?.name || ""}
-                open={editModalOpen}
-                onOpenChange={setEditModalOpen}
-            />
         </>
     );
 }

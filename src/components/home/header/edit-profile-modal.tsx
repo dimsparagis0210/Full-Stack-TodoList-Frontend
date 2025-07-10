@@ -1,3 +1,8 @@
+/**
+ * Edit profile modal component
+ * 
+ * This component is used to edit the user's profile.
+ */
 import React, { useState, useRef, useEffect } from "react";
 import {
   Dialog,
@@ -6,12 +11,13 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose
+  DialogClose,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import type { UseMutationResult } from "@tanstack/react-query";
+import { useUpdateUser } from "@/hooks/home/use-update-user";
 
 interface EditProfileModalProps {
   user: {
@@ -19,19 +25,20 @@ interface EditProfileModalProps {
     email: string;
     id: number;
   };
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  updateUserMutation: UseMutationResult<any, Error, any, unknown>;
+  trigger?: React.ReactNode;
+  onSuccess?: () => void;
 }
 
-export const EditProfileModal = ({ user, open, onOpenChange, updateUserMutation }: EditProfileModalProps) => {
+export const EditProfileModal = ({ user, trigger, onSuccess }: EditProfileModalProps) => {
+  // Hooks and States
   const [form, setForm] = useState({
     name: user.name,
     email: user.email,
   });
+  const closeButtonRef = useRef<HTMLButtonElement>(null); // Ref for the close button
+  const updateUserMutation = useUpdateUser(user.id); // Mutation to update the user
 
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-
+  // Handlers
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -39,16 +46,13 @@ export const EditProfileModal = ({ user, open, onOpenChange, updateUserMutation 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Submitting user data:", form);
-    
     updateUserMutation.mutate(form, {
       onSuccess: () => {
-        console.log("User profile updated successfully");
-        onOpenChange(false);
+        closeButtonRef.current?.click();
+        onSuccess?.();
       },
       onError: (error) => {
         console.error("Error updating user profile:", error);
-        // Keep modal open on error so user can see what happened
       }
     });
   };
@@ -62,7 +66,12 @@ export const EditProfileModal = ({ user, open, onOpenChange, updateUserMutation 
   }, [user]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog>
+      {trigger && (
+        <DialogTrigger asChild>
+          {trigger}
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>

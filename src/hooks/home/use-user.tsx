@@ -1,3 +1,8 @@
+/**
+ * User hook
+ * 
+ * This hook is used to fetch a user by their email.
+ */
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserByEmail } from "@/api/user";
 

@@ -1,4 +1,9 @@
-import { signUp } from "@/api/sign-up";
+/**
+ * Register hook
+ * 
+ * This hook is used to register/sign up a new user.
+ */
+import { signUp } from "@/api/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
