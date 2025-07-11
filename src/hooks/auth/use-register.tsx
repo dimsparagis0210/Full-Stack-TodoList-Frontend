@@ -7,7 +7,7 @@ import { signUp } from "@/api/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-export const useRegister = () => {
+export const useRegister = (onError: (error: any) => void) => {
     const navigate = useNavigate();
     return useMutation({
         mutationFn: signUp,
@@ -19,8 +19,8 @@ export const useRegister = () => {
             localStorage.setItem('refreshToken', data.refreshToken);
             navigate('/');
         },
-        onError: () => {
-            console.log('error');
+        onError: (error) => {
+            onError(error);
         },
     });
 }

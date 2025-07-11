@@ -29,6 +29,7 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
   const [showPassword, setShowPassword] = useState(false); // State to show/hide password
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to show/hide confirm password
   const [isLoading, setIsLoading] = useState(false); // State to show/hide loading spinner
+  const [error, setError] = useState(''); // State to show/hide error message
 
   // Forms
   const signInForm = useForm<SignInData>({
@@ -52,9 +53,14 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
   // Current form
   const currentForm = isSignUp ? signUpForm : signInForm;
 
-  // Hooks to handle the sign up and sign in
-  const register = useRegister();
-  const authenticate = useAuthenticate();
+  //Hooks to handle the sign up and sign in
+  const onError = (error: any) => {
+    console.log("error", error);
+    setError("Authentication failed. Please try again.");
+  }
+  const register = useRegister(onError);
+  const authenticate = useAuthenticate(onError);
+
   
   // On submit
   const onSubmit = async (data: SignInData | SignUpData) => {
@@ -108,6 +114,11 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
       <CardContent className="space-y-6">
         {/* Form to handle the sign up and sign in */}
         <form onSubmit={currentForm.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Error message */}
+          {error && (
+            <p className="text-sm text-red-600">{error}</p>
+          )}
+
           {/* If the form is sign up, we need to show the name input */}
           {isSignUp && (
             <div className="space-y-2">
