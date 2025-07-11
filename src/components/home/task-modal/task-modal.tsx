@@ -41,23 +41,31 @@ export const TaskModal = ({
 
   // Ref for the close button
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const [assigneeError, setAssigneeError] = useState("");
-
+  
   // Hook for managing the task form
   const {
     form,
     dateError,
+    priorityError,
+    assigneeError,
     isEditMode,
     updateForm: originalUpdateForm,
     resetForm,
     validateDates,
+    validatePriority,
+    validateAssignee,
     getTaskData
   } = useTaskForm({ task, assignedToName, status });
 
   // Wrapper to clear assignee error when assignee changes
   const updateForm = (updates: Parameters<typeof originalUpdateForm>[0]) => {
+    console.log("updates", updates);
     if (updates.assignedTo !== undefined) {
-      setAssigneeError("");
+      validateAssignee();
+    } else if (updates.priority !== undefined) {
+      validatePriority();
+    } else if (updates.startDate !== undefined || updates.dueDate !== undefined) {
+      validateDates();
     }
     originalUpdateForm(updates);
   };
@@ -70,17 +78,12 @@ export const TaskModal = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate priority, assignee, and dates
+    if (!validatePriority()) return;
+    if (!validateAssignee()) return;
     if (!validateDates()) return;
 
-    // Validate assignee is selected
-    if (!form.assignedTo || form.assignedTo.trim() === "") {
-      setAssigneeError("Please select an assignee");
-      return;
-    }
-    
-    // Clear assignee error if validation passes
-    setAssigneeError("");
-
+    // Submit
     const taskData = getTaskData();
 
     if (isEditMode && task) {
@@ -135,6 +138,7 @@ export const TaskModal = ({
           form={form} 
           dateError={dateError} 
           assigneeError={assigneeError}
+          priorityError={priorityError}
           isEditMode={isEditMode} 
           closeButtonRef={closeButtonRef} 
         />

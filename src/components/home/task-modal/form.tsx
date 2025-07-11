@@ -34,10 +34,11 @@ interface FormProps {
     }
     dateError: string;
     assigneeError: string;
+    priorityError: string;
     isEditMode: boolean;
     closeButtonRef: React.RefObject<HTMLButtonElement | null>;
 }
-export const Form = ({ updateForm, assignedToName, status, onSubmit, form, dateError, assigneeError, isEditMode, closeButtonRef }: FormProps) => {
+export const Form = ({ updateForm, assignedToName, status, onSubmit, form, dateError, assigneeError, priorityError, isEditMode, closeButtonRef }: FormProps) => {
     // Form handlers
     const {
         handleInputChange,
@@ -55,6 +56,13 @@ export const Form = ({ updateForm, assignedToName, status, onSubmit, form, dateE
 
             {/* Priority selector */}
             <PrioritySelector value={form.priority} onSelect={handlePriorityChange} />
+
+            {/* Assignee error message */}
+            {priorityError && (
+                <div className="text-red-500 text-sm">
+                    {priorityError}
+                </div>
+            )}
 
             {/* Assignee selector component */}
             <AssigneeSelector

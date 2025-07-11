@@ -28,8 +28,10 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
     dueDate: task?.dueDate ? new Date(task.dueDate) : (undefined as Date | undefined),
   });
   
-  // Date error state
+  // Error state
   const [dateError, setDateError] = useState("");
+  const [priorityError, setPriorityError] = useState("");
+  const [assigneeError, setAssigneeError] = useState("");
 
   // Reset form when task changes (edit mode)
   useEffect(() => {
@@ -48,9 +50,20 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
 
   const updateForm = (updates: Partial<typeof form>) => {
     setForm(prev => ({ ...prev, ...updates }));
-    // Clear date error when dates change
+    // Clear date error when dates change and both are present and valid
     if (updates.startDate !== undefined || updates.dueDate !== undefined) {
-      setDateError("");
+      const newStartDate = updates.startDate !== undefined ? updates.startDate : form.startDate;
+      const newDueDate = updates.dueDate !== undefined ? updates.dueDate : form.dueDate;
+      
+      if (newStartDate && newDueDate && !isNaN(newStartDate.getDate()) && !isNaN(newDueDate.getDate())) {
+        setDateError("");
+      }
+    }
+    if (updates.priority !== undefined) {
+      setPriorityError("");
+    }
+    if (updates.assignedTo !== undefined) {
+      setAssigneeError("");
     }
   };
 
@@ -65,14 +78,58 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
       dueDate: undefined,
     });
     setDateError("");
+    setPriorityError("");
+    setAssigneeError("");
+  };
+
+  const validatePriority = () => {
+    setPriorityError("");
+    if (form.priority === "") {
+      setPriorityError("Priority is required");
+      return false;
+    }
+    return true;
+  };
+
+  const validateAssignee = () => {
+    setAssigneeError("");
+    if (form.assignedTo === "") {
+      setAssigneeError("Assignee is required");
+      return false;
+    }
+    return true;
   };
 
   const validateDates = () => {
     setDateError("");
+    
+    const hasStartDate = form.startDate && !isNaN(form.startDate.getDate());
+    const hasDueDate = form.dueDate && !isNaN(form.dueDate.getDate());
+    
+    // Check if both dates are missing
+    if (!hasStartDate && !hasDueDate) {
+      setDateError("Both start date and due date are required");
+      return false;
+    }
+    
+    // Check if only start date is missing
+    if (!hasStartDate) {
+      setDateError("Start date is required");
+      return false;
+    }
+    
+    // Check if only due date is missing
+    if (!hasDueDate) {
+      setDateError("Due date is required");
+      return false;
+    }
+    
+    // Check if start date is after due date
     if (form.startDate && form.dueDate && form.startDate > form.dueDate) {
       setDateError("Start date cannot be after due date");
       return false;
     }
+    
     return true;
   };
 
@@ -86,10 +143,14 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
   return {
     form,
     dateError,
+    priorityError,
+    assigneeError,
     isEditMode,
     updateForm,
     resetForm,
     validateDates,
+    validatePriority,
+    validateAssignee,
     getTaskData,
   };
 }; 
