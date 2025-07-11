@@ -19,8 +19,6 @@ export const Main = () => {
     // Get the user from the Redux store
     const user = useSelector((state: RootState) => state.user);
 
-    console.log(user);
-
     // Get and separate the tasks from the user's board
     const todoTasks = user.board?.tasks.filter((task) => task.status === "To Do");
     const inProgressTasks = user.board?.tasks.filter((task) => task.status === "In Progress");

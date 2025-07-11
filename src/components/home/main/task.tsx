@@ -77,7 +77,7 @@ export const Task = ({ task }: TaskProps) => {
                         <header className="flex flex-col gap-y-2">
                             <section className="flex justify-between">
                                 <h1 className="text-2xl font-semibold">{task.title}</h1>
-                                <h2 className="text-sm bg-[#27C5C5]/10 text-primary-blue text-white px-2 py-1 rounded-md">{task.category}</h2>
+                                <h2 className="h-fit text-sm bg-[#27C5C5]/10 text-primary-blue text-white px-2 py-1 rounded-md">{task.category}</h2>
                             </section>
                             <section className="flex w-fit items-center gap-x-2 border border-[#E2E2E2] rounded-sm p-1">
                                 <img src="calendar.png" alt="Calendar" width={20} height={20} />

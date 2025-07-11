@@ -59,7 +59,6 @@ export const TaskModal = ({
 
   // Wrapper to clear assignee error when assignee changes
   const updateForm = (updates: Parameters<typeof originalUpdateForm>[0]) => {
-    console.log("updates", updates);
     if (updates.assignedTo !== undefined) {
       validateAssignee();
     } else if (updates.priority !== undefined) {
