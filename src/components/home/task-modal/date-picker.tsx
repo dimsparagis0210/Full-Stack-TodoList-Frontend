@@ -1,9 +1,9 @@
 /**
  * Date picker component
- * 
+ *
  * This component is used to select a date from a calendar.
  */
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -24,7 +24,13 @@ interface DatePickerProps {
   hasError?: boolean;
 }
 
-export const DatePicker = ({ label, value, onSelect, placeholder, hasError }: DatePickerProps) => {
+export const DatePicker = ({
+  label,
+  value,
+  onSelect,
+  placeholder,
+  hasError,
+}: DatePickerProps) => {
   // States
   const [open, setOpen] = useState(false);
 
@@ -48,20 +54,16 @@ export const DatePicker = ({ label, value, onSelect, placeholder, hasError }: Da
               hasError && "border-red-500 focus:ring-red-500"
             )}
           >
-            {value ? format(value, "PPP") : <span>{placeholder}</span>} {/* The date format */}
+            {value ? format(value, "PPP") : <span>{placeholder}</span>}{" "}
+            {/* The date format */}
             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
         {/* The Popover content */}
         <PopoverContent className="w-auto p-0">
-          <Calendar
-            mode="single"
-            selected={value}
-            onSelect={handleSelect}
-            initialFocus
-          />
+          <Calendar mode="single" selected={value} onSelect={handleSelect} />
         </PopoverContent>
       </Popover>
     </div>
   );
-}; 
+};

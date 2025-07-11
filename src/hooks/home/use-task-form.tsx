@@ -1,6 +1,6 @@
 /**
  * Task form hook
- * 
+ *
  * This hook is used to manage the task form.
  */
 import { useState, useEffect } from "react";
@@ -13,10 +13,14 @@ interface UseTaskFormProps {
   status?: string;
 }
 
-export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: UseTaskFormProps) => {
+export const useTaskForm = ({
+  task,
+  assignedToName = "",
+  status = "To Do",
+}: UseTaskFormProps) => {
   // States
   const isEditMode = Boolean(task);
-  
+
   // Form state
   const [form, setForm] = useState({
     title: task?.title || "",
@@ -24,10 +28,14 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
     category: task?.category || "",
     priority: task?.priority || "",
     assignedTo: assignedToName || "",
-    startDate: task?.startDate ? new Date(task.startDate) : (undefined as Date | undefined),
-    dueDate: task?.dueDate ? new Date(task.dueDate) : (undefined as Date | undefined),
+    startDate: task?.startDate
+      ? new Date(task.startDate)
+      : (undefined as Date | undefined),
+    dueDate: task?.dueDate
+      ? new Date(task.dueDate)
+      : (undefined as Date | undefined),
   });
-  
+
   // Error state
   const [dateError, setDateError] = useState("");
   const [priorityError, setPriorityError] = useState("");
@@ -49,13 +57,20 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
   }, [task, assignedToName, isEditMode]);
 
   const updateForm = (updates: Partial<typeof form>) => {
-    setForm(prev => ({ ...prev, ...updates }));
+    setForm((prev) => ({ ...prev, ...updates }));
     // Clear date error when dates change and both are present and valid
     if (updates.startDate !== undefined || updates.dueDate !== undefined) {
-      const newStartDate = updates.startDate !== undefined ? updates.startDate : form.startDate;
-      const newDueDate = updates.dueDate !== undefined ? updates.dueDate : form.dueDate;
-      
-      if (newStartDate && newDueDate && !isNaN(newStartDate.getDate()) && !isNaN(newDueDate.getDate())) {
+      const newStartDate =
+        updates.startDate !== undefined ? updates.startDate : form.startDate;
+      const newDueDate =
+        updates.dueDate !== undefined ? updates.dueDate : form.dueDate;
+
+      if (
+        newStartDate &&
+        newDueDate &&
+        !isNaN(newStartDate.getDate()) &&
+        !isNaN(newDueDate.getDate())
+      ) {
         setDateError("");
       }
     }
@@ -102,34 +117,34 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
 
   const validateDates = () => {
     setDateError("");
-    
+
     const hasStartDate = form.startDate && !isNaN(form.startDate.getDate());
     const hasDueDate = form.dueDate && !isNaN(form.dueDate.getDate());
-    
+
     // Check if both dates are missing
     if (!hasStartDate && !hasDueDate) {
       setDateError("Both start date and due date are required");
       return false;
     }
-    
+
     // Check if only start date is missing
     if (!hasStartDate) {
       setDateError("Start date is required");
       return false;
     }
-    
+
     // Check if only due date is missing
     if (!hasDueDate) {
       setDateError("Due date is required");
       return false;
     }
-    
+
     // Check if start date is after due date
     if (form.startDate && form.dueDate && form.startDate > form.dueDate) {
       setDateError("Start date cannot be after due date");
       return false;
     }
-    
+
     return true;
   };
 
@@ -137,7 +152,7 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
     ...form,
     startDate: form.startDate ? format(form.startDate, "yyyy-MM-dd") : "",
     dueDate: form.dueDate ? format(form.dueDate, "yyyy-MM-dd") : "",
-    status: isEditMode ? (task?.status || "To Do") : status,
+    status: isEditMode ? task?.status || "To Do" : status,
   });
 
   return {
@@ -153,4 +168,4 @@ export const useTaskForm = ({ task, assignedToName = "", status = "To Do" }: Use
     validateAssignee,
     getTaskData,
   };
-}; 
+};

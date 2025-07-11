@@ -1,10 +1,10 @@
 /**
  * Home page
- * 
+ *
  * This page is the home page of the application.
  * It renders the home page and provides the header and the main content.
  */
-import { useAuth } from "@/hooks/auth/use-auth"
+import { useAuth } from "@/hooks/auth/use-auth";
 import { Navigate } from "react-router-dom";
 import { decodeJwt } from "@/lib/jwt";
 import { useUser } from "@/hooks/home/use-user";
@@ -27,9 +27,13 @@ export const Home = () => {
   const sub = accessToken ? decodeJwt(accessToken).sub : null;
 
   // Call the hook always, but control it using `enabled`
-  const { data: user, isLoading, error } = useUser(sub, {
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useUser(sub, {
     enabled: !isRefreshing && !!accessToken && !!sub,
-  }) as { data: User | undefined, isLoading: boolean, error: any };
+  }) as { data: User | undefined; isLoading: boolean; error: any };
 
   const { mutate: createBoard } = useCreateBoard(user?.id || 0);
   useEffect(() => {
@@ -57,7 +61,7 @@ export const Home = () => {
 
   // If there is an error or the user is not authenticated, redirect to the sign in page
   if (error || !user || !isAuthenticated) {
-    return <Navigate to="/sign-in" />
+    return <Navigate to="/sign-in" />;
   }
 
   return (

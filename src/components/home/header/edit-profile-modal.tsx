@@ -1,6 +1,6 @@
 /**
  * Edit profile modal component
- * 
+ *
  * This component is used to edit the user's profile.
  */
 import React, { useState, useRef, useEffect } from "react";
@@ -12,7 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,7 +29,11 @@ interface EditProfileModalProps {
   onSuccess?: () => void;
 }
 
-export const EditProfileModal = ({ user, trigger, onSuccess }: EditProfileModalProps) => {
+export const EditProfileModal = ({
+  user,
+  trigger,
+  onSuccess,
+}: EditProfileModalProps) => {
   // Hooks and States
   const [form, setForm] = useState({
     name: user.name,
@@ -45,7 +49,7 @@ export const EditProfileModal = ({ user, trigger, onSuccess }: EditProfileModalP
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     updateUserMutation.mutate(form, {
       onSuccess: () => {
         closeButtonRef.current?.click();
@@ -53,7 +57,7 @@ export const EditProfileModal = ({ user, trigger, onSuccess }: EditProfileModalP
       },
       onError: (error) => {
         console.error("Error updating user profile:", error);
-      }
+      },
     });
   };
 
@@ -67,46 +71,53 @@ export const EditProfileModal = ({ user, trigger, onSuccess }: EditProfileModalP
 
   return (
     <Dialog>
-      {trigger && (
-        <DialogTrigger asChild>
-          {trigger}
-        </DialogTrigger>
-      )}
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
-          <DialogDescription>Update your profile information below.</DialogDescription>
+          <DialogDescription>
+            Update your profile information below.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-y-2">
             <Label htmlFor="name">Name</Label>
-            <Input 
-              id="name" 
-              name="name" 
-              value={form.name} 
-              onChange={handleChange} 
-              required 
+            <Input
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
               placeholder="Enter your name"
             />
           </div>
           <div className="flex flex-col gap-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input 
-              id="email" 
-              name="email" 
+            <Input
+              id="email"
+              name="email"
               type="email"
-              value={form.email} 
-              onChange={handleChange} 
-              required 
+              value={form.email}
+              onChange={handleChange}
+              required
               placeholder="Enter your email"
             />
           </div>
           <DialogFooter>
-            <Button type="submit" className="my-button" disabled={updateUserMutation.isPending}>
+            <Button
+              type="submit"
+              className="my-button"
+              disabled={updateUserMutation.isPending}
+            >
               {updateUserMutation.isPending ? "Updating..." : "Update Profile"}
             </Button>
             <DialogClose asChild>
-              <Button type="button" variant="secondary" className="my-button" ref={closeButtonRef}>
+              <Button
+                type="button"
+                variant="secondary"
+                className="my-button"
+                ref={closeButtonRef}
+              >
                 Cancel
               </Button>
             </DialogClose>
@@ -115,4 +126,4 @@ export const EditProfileModal = ({ user, trigger, onSuccess }: EditProfileModalP
       </DialogContent>
     </Dialog>
   );
-}; 
+};

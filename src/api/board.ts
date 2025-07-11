@@ -25,7 +25,6 @@ export const getBoard = async (creatorId: number): Promise<Board> => {
  * @returns The task
  */
 export const addTaskToBoard = async (task: TaskDTO, creatorId: number): Promise<Task> => {
-    console.log(task);
     return await apiFetch(`${API_URL}/board/addTask/${creatorId}`, {
         method: "POST",
         body: JSON.stringify(task),

@@ -1,6 +1,6 @@
 /**
  * Task modal component
- * 
+ *
  * This component handles both creating and editing tasks.
  * It automatically detects mode based on whether a task prop is provided.
  */
@@ -34,14 +34,14 @@ export const TaskModal = ({
   task,
   assignedToName = "",
   status = "To Do",
-  onSuccess
+  onSuccess,
 }: TaskModalProps) => {
   // Get the user from the Redux store
   const user = useSelector((state: RootState) => state.user);
 
   // Ref for the close button
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  
+
   // Hook for managing the task form
   const {
     form,
@@ -54,7 +54,7 @@ export const TaskModal = ({
     validateDates,
     validatePriority,
     validateAssignee,
-    getTaskData
+    getTaskData,
   } = useTaskForm({ task, assignedToName, status });
 
   // Wrapper to clear assignee error when assignee changes
@@ -63,7 +63,10 @@ export const TaskModal = ({
       validateAssignee();
     } else if (updates.priority !== undefined) {
       validatePriority();
-    } else if (updates.startDate !== undefined || updates.dueDate !== undefined) {
+    } else if (
+      updates.startDate !== undefined ||
+      updates.dueDate !== undefined
+    ) {
       validateDates();
     }
     originalUpdateForm(updates);
@@ -94,7 +97,7 @@ export const TaskModal = ({
             closeButtonRef.current?.click();
             onSuccess?.();
           },
-          onError: (error) => console.error("Error updating task:", error)
+          onError: (error) => console.error("Error updating task:", error),
         }
       );
     } else {
@@ -106,7 +109,7 @@ export const TaskModal = ({
             resetForm();
             closeButtonRef.current?.click();
           },
-          onError: (error) => console.error("Error adding task:", error)
+          onError: (error) => console.error("Error adding task:", error),
         }
       );
     }
@@ -114,34 +117,33 @@ export const TaskModal = ({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        {trigger}
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         {/* Dialog header */}
         <DialogHeader>
-          <DialogTitle>{isEditMode ? "Edit Task" : "Create a New Task"}</DialogTitle>
+          <DialogTitle>
+            {isEditMode ? "Edit Task" : "Create a New Task"}
+          </DialogTitle>
           <DialogDescription>
             {isEditMode
               ? "Update the task details below."
-              : "Fill in the details below to add a new task."
-            }
+              : "Fill in the details below to add a new task."}
           </DialogDescription>
         </DialogHeader>
         {/* Form */}
-        <Form 
-          updateForm={updateForm} 
-          assignedToName={assignedToName} 
-          status={status} 
-          onSubmit={handleSubmit} 
-          form={form} 
-          dateError={dateError} 
+        <Form
+          updateForm={updateForm}
+          assignedToName={assignedToName}
+          status={status}
+          onSubmit={handleSubmit}
+          form={form}
+          dateError={dateError}
           assigneeError={assigneeError}
           priorityError={priorityError}
-          isEditMode={isEditMode} 
-          closeButtonRef={closeButtonRef} 
+          isEditMode={isEditMode}
+          closeButtonRef={closeButtonRef}
         />
       </DialogContent>
     </Dialog>
   );
-}; 
+};

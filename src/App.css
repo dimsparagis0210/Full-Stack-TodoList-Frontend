@@ -125,16 +125,16 @@
 }
 
 /* Primary blue colors */
-.bg-primary-blue { 
+.bg-primary-blue {
   @apply bg-[#27C5C5];
   /* 39AEC5 */
 }
 
-.text-primary-blue { 
+.text-primary-blue {
   @apply text-[#27C5C5];
 }
 
-.border-primary-blue { 
+.border-primary-blue {
   @apply border-[#27C5C5];
 }
 
@@ -159,14 +159,16 @@
 }
 
 /* Task container media queries */
-@media (min-width: 768px) { /* sm */
+@media (min-width: 768px) {
+  /* sm */
   .task-container {
     @apply grid grid-cols-3 gap-x-10 gap-y-5;
   }
 }
 
 /* Blur circle media queries */
-@media (max-width: 768px) { /* md */
+@media (max-width: 768px) {
+  /* md */
   .bg-blur-circle {
     display: none;
   }
@@ -192,13 +194,13 @@
   bottom: -30%;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   left: 50%;
   right: 50%;
   transform: translateX(-50%);
   width: 800px;
   aspect-ratio: 1/1;
-  background: #27C5C5;
+  background: #27c5c5;
   border-radius: 50%;
   filter: blur(30px);
   opacity: 0.3;
@@ -208,11 +210,11 @@
 
 /* Blur circle 2 */
 .bg-blur-circle-2 {
-  content: '';
+  content: "";
   position: relative;
   width: 80%;
   height: 80%;
-  background: radial-gradient(circle, #9333EA 0%, #9333EA 70%, #27C5C5 100%);
+  background: radial-gradient(circle, #9333ea 0%, #9333ea 70%, #27c5c5 100%);
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.5;

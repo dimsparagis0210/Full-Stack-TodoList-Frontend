@@ -1,10 +1,10 @@
 /**
  * Assignee selector component
- * 
+ *
  * This component is used to select an assignee from a list of users.
  * It uses a debounced search to search for users.
  */
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,10 +29,21 @@ interface AssigneeSelectorProps {
   onSelect: (name: string) => void;
 }
 
-export const AssigneeSelector = ({ value, onSelect }: AssigneeSelectorProps) => {
+export const AssigneeSelector = ({
+  value,
+  onSelect,
+}: AssigneeSelectorProps) => {
   // States
   const [open, setOpen] = useState(false);
-  const { searchQuery, setSearchQuery, users, showLoading, error, clearSearch, hasQuery } = useDebouncedSearch(); // Debounced search hook
+  const {
+    searchQuery,
+    setSearchQuery,
+    users,
+    showLoading,
+    error,
+    clearSearch,
+    hasQuery,
+  } = useDebouncedSearch(); // Debounced search hook
 
   // Handlers
   const handleSelect = (id: number, name: string) => {
@@ -42,8 +53,9 @@ export const AssigneeSelector = ({ value, onSelect }: AssigneeSelectorProps) => 
   };
 
   // Selected user
-  const selectedUser = users.find((user: any) => user.name === value) || 
-                      (value ? { name: value } : null);
+  const selectedUser =
+    users.find((user: any) => user.name === value) ||
+    (value ? { name: value } : null);
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -66,11 +78,10 @@ export const AssigneeSelector = ({ value, onSelect }: AssigneeSelectorProps) => 
         {/* The Popover content */}
         <PopoverContent className="w-full p-0">
           <Command>
-            <CommandInput 
-              placeholder="Search assignee..." 
+            <CommandInput
+              placeholder="Search assignee..."
               value={searchQuery}
               onValueChange={setSearchQuery}
-              
               required
             />
             {/* The CommandList */}
@@ -82,13 +93,17 @@ export const AssigneeSelector = ({ value, onSelect }: AssigneeSelectorProps) => 
                 </div>
               )}
               {error && (
-                <div className="p-2 text-sm text-red-500">Error searching users</div>
+                <div className="p-2 text-sm text-red-500">
+                  Error searching users
+                </div>
               )}
               {!showLoading && !error && users.length === 0 && hasQuery && (
                 <CommandEmpty>No assignee found.</CommandEmpty>
               )}
               {!searchQuery && !showLoading && (
-                <div className="p-2 text-sm text-muted-foreground">Start typing to search users...</div>
+                <div className="p-2 text-sm text-muted-foreground">
+                  Start typing to search users...
+                </div>
               )}
               {users.length > 0 && !showLoading && (
                 <CommandGroup>
@@ -115,4 +130,4 @@ export const AssigneeSelector = ({ value, onSelect }: AssigneeSelectorProps) => 
       </Popover>
     </div>
   );
-}; 
+};

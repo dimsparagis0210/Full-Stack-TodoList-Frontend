@@ -1,6 +1,6 @@
 /**
  * Header component
- * 
+ *
  * This component is the header of the home page.
  * It renders the header, provides the avatar and the create task button.
  */
@@ -47,10 +47,14 @@ export const Header = () => {
         </section>
         <section className="flex items-center gap-x-10">
           {/* Create task button */}
-          <TaskModal 
+          <TaskModal
             status="To Do"
             trigger={
-              <Button variant="outline" size="lg" className="bg-primary-blue text-white text-md my-button">
+              <Button
+                variant="outline"
+                size="lg"
+                className="bg-primary-blue text-white text-md my-button"
+              >
                 + Create Task
               </Button>
             }
@@ -74,7 +78,7 @@ export const Header = () => {
                 user={user}
                 onSuccess={handleEditSuccess}
                 trigger={
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     className="cursor-pointer"
                     onSelect={(e) => e.preventDefault()}
                   >
@@ -83,7 +87,10 @@ export const Header = () => {
                   </DropdownMenuItem>
                 }
               />
-              <DropdownMenuItem onClick={handleLogOut} className="cursor-pointer">
+              <DropdownMenuItem
+                onClick={handleLogOut}
+                className="cursor-pointer"
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log Out</span>
               </DropdownMenuItem>
@@ -92,5 +99,5 @@ export const Header = () => {
         </section>
       </section>
     </header>
-  )
-}
+  );
+};

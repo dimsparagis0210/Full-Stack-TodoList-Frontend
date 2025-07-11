@@ -1,6 +1,6 @@
 /**
  * Debounced search hook
- * 
+ *
  * This hook is used to search for users with a debounced search.
  * The way it works is that it waits for the user to stop typing for a certain amount of time before making the request.
  * It also uses a debounced search to search for users.
@@ -43,4 +43,4 @@ export const useDebouncedSearch = (delay: number = 300) => {
     clearSearch,
     hasQuery: !!debouncedQuery,
   };
-}; 
+};
