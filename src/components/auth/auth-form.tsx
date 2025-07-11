@@ -104,7 +104,7 @@ export const AuthForm = (props: { isSignUp: boolean }) => {
 
   return (
     // Card to wrap the form
-    <Card className="w-full max-w-md mx-auto backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border-white/20 shadow-2xl">
+    <Card className="z-10 w-full max-w-md mx-auto backdrop-blur-xl bg-white/90 dark:bg-gray-900/90 border-white/20 shadow-2xl">
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-2xl font-bold tracking-tight">
           {isSignUp ? "Create account" : "Welcome back"}

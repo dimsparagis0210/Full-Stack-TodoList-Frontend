@@ -14,7 +14,14 @@ export const SignUp = () => {
     localStorage.removeItem("refreshToken");
   }, []);
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="relative flex justify-center items-center h-screen overflow-hidden">
+      {/* Blurry gradient background */}
+      <div className="fixed top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/3 w-full h-[50%] pointer-events-none z-0">
+      <div className="w-full h-full bg-gradient-to-b from-[#16e7e7] via-[#cd1dcd] to-[#33eae7] rounded-full filter blur-[100px] opacity-30"></div>
+
+      </div>
+
+      {/* Auth form - positioned above the background */}
       <AuthForm isSignUp={true} />
     </div>
   );
